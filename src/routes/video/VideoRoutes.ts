@@ -1,9 +1,15 @@
 import { Router, Request, Response } from "express";
 import axios from "axios";
+import cors from "cors";
 
 const VideoRouters = Router();
 
-VideoRouters.get("/video", async function(req: Request, res: Response) {
+const corsOptions = {
+  origin: 'https://yt-2-mp3.netlify.app',
+  optionsSuccessStatus: 200
+}
+
+VideoRouters.get("/video", cors(corsOptions),async function(req: Request, res: Response) {
     const requestOptions = {
         method: 'GET',
         url: 'https://youtube-mp36.p.rapidapi.com/dl',
