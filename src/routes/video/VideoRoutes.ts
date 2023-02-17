@@ -25,7 +25,7 @@ VideoRouters.get("/video", async function(req: Request, res: Response): Promise<
     if (requestOptions.params.id) {
       try {
         const response = await axios.request(requestOptions);
-        return res.json(response.data).status(response.status).send();
+        return res.status(response.status).json(response.data);
       } catch (error: any) {
         if (error.response.status === 429) {
           return res.status(429).send({
@@ -59,7 +59,7 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
   const cachedSongs = await client.get('songs');
   
   if (cachedSongs) {
-    return res.json({ songs: JSON.parse(cachedSongs) }).status(200).send();
+    return res.json({ songs: JSON.parse(cachedSongs) });
   }
 
   const response = await axios.request(requestOptions);
@@ -70,17 +70,17 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
     });
     
     if (!youtubeData[0].items) {
-      return res.json({
+      return res.status(500).json({
         message: "Internal server error"
-      }).status(500).send();
+      });
     }
 
     const songs = youtubeData[0].items;
 
     if (!songs.length) {
-      return res.json({
+      return res.status(500).json({
         message: "Internal server error"
-      }).status(500).send();
+      });
     }
 
     await client.set('songs', JSON.stringify(songs), {
@@ -88,12 +88,12 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
       NX: true
     });
 
-    return res.json({ songs }).status(200).send();
+    return res.json({ songs });
   }
 
-  return res.json({
+  return res.status(500).json({
     message: "Internal server error"
-  }).status(500).send();
+  });
 });
 
 export { VideoRouters };
