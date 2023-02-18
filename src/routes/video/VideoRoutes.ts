@@ -48,7 +48,7 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
   const requestOptions = {
     method: 'GET',
     url: 'https://youtube-search-results.p.rapidapi.com/youtube-search/',
-    params: { q: 'music' },
+    params: { q: '2023 song' },
     headers: {
       'X-RapidAPI-Key': process.env.RAPID_API_KEY,
       'X-RapidAPI-Host': process.env.RAPID_API_YT_SEARCH_HOST
@@ -57,9 +57,18 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
 
   const client = await RedisManager.getInstance();
   const cachedSongs = await client.get('songs');
+
+  const prepareResponseArray = (songs: []): object[] => {
+    const shuffled = songs.sort(function () {
+      return Math.random() - 0.5;
+    });
+
+    return shuffled.slice(0, 4)
+  }
   
   if (cachedSongs) {
-    return res.json({ songs: JSON.parse(cachedSongs) });
+    const shuffled = prepareResponseArray(JSON.parse(cachedSongs));
+    return res.json({ songs: shuffled });
   }
 
   const response = await axios.request(requestOptions);
@@ -87,8 +96,8 @@ VideoRouters.get("/popular", async function(req: Request, res: Response): Promis
       EX: 6 * 60 * 60,
       NX: true
     });
-
-    return res.json({ songs });
+    
+    return res.json({ songs: prepareResponseArray(songs) });
   }
 
   return res.status(500).json({
