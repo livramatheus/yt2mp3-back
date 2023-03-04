@@ -66,8 +66,8 @@
 <h4>Desktop</h4>
 
 <div style="display: flex; gap: 0.2rem">
-    <img alt="Desktop 1" title="Main Page" src="readme-img/d1.webp" height="220"/>
-    <img alt="Desktop 2" title="Toast" src="readme-img/d2.webp" height="220"/>
+    <img alt="Desktop 1" title="Main Page" src="readme-img/d1.webp" height="210"/>
+    <img alt="Desktop 2" title="Toast" src="readme-img/d2.webp" height="210"/>
 </div>
 
 <h3 id="technologies-front">🔨 Technologies</h3>
@@ -195,5 +195,3 @@ modern youtube to mp3 downloader tool clean minimalistic website, design, ux/ui,
 <p>
     <a href="https://github.com/livramatheus">GitHub</a> | <a href="https://www.linkedin.com/in/livramatheus">LinkedIn</a> | <a href="https://www.livramento.dev/">Website</a>
 </p>
-
-<hr />
