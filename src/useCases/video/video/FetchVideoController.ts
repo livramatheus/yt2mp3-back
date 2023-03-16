@@ -7,7 +7,7 @@ class FetchVideoController {
     const fetchVideoUseCase = new FetchVideoUseCase();
     const video = await fetchVideoUseCase.execute(req, res);
     
-    return video;
+    return res.json(video);
   }
 
 }

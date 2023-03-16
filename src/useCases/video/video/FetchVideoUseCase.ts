@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Request, Response } from "express";
 import { AppError } from "../../../errors/AppError";
+import Video from "../../../interfaces/Video/Video";
 
 class FetchVideoUseCase {
 
-  async execute(req: Request, res: Response): Promise<any> {
+  async execute(req: Request, res: Response): Promise<Video> {
     const requestOptions = {
       method: 'GET',
       url: 'https://youtube-mp36.p.rapidapi.com/dl',
@@ -18,7 +19,7 @@ class FetchVideoUseCase {
     if (requestOptions.params.id) {
       try {
         const response = await axios.request(requestOptions);
-        return res.status(response.status).json(response.data);
+        return response.data;
       } catch (error: any) {
         if (error.response.status === 429) {
           throw new AppError("The daily download limit has been exceeded", 429);
