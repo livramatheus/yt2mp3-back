@@ -1,10 +1,11 @@
 import axios from "axios";
 import { AppError } from "../../../errors/AppError";
 import { RedisManager } from "../../../infra/RedisManager";
+import PopularSongsList from "../../../interfaces/Popular/PopularSongsList";
 
 class FetchPopularUseCase {
 
-  async execute(): Promise<any> {
+  async execute(): Promise<PopularSongsList> {
     const requestOptions = {
       method: 'GET',
       url: 'https://youtube-search-results.p.rapidapi.com/youtube-search/',
