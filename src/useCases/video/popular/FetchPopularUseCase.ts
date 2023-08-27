@@ -2,14 +2,18 @@ import axios from "axios";
 import { AppError } from "../../../errors/AppError";
 import { RedisManager } from "../../../infra/RedisManager";
 import PopularSongsList from "../../../interfaces/Popular/PopularSongsList";
+import PopularSong from "../../../models/PopularSong";
 
 class FetchPopularUseCase {
 
   async execute(): Promise<PopularSongsList> {
     const requestOptions = {
       method: 'GET',
-      url: 'https://youtube-search-results.p.rapidapi.com/youtube-search/',
-      params: { q: '2023 song' },
+      url: 'https://simple-youtube-search.p.rapidapi.com/search',
+      params: {
+        query: 'official+music+video',
+        safesearch: 'false'
+      },
       headers: {
         'X-RapidAPI-Key': process.env.RAPID_API_KEY,
         'X-RapidAPI-Host': process.env.RAPID_API_YT_SEARCH_HOST
@@ -33,28 +37,29 @@ class FetchPopularUseCase {
     }
   
     const response = await axios.request(requestOptions);
-  
+    
     if (response.status === 200) {
-      const youtubeData = response.data.items.filter((i: any) => {
-        return i.title === "Popular today";
-      });
-      
-      if (!youtubeData[0].items) {
-        throw new AppError("Internal server error", 500);
-      }
-  
-      const songs = youtubeData[0].items;
+      const songs = response.data.results;
   
       if (!songs.length) {
         throw new AppError("Internal server error", 500);
       }
-  
-      await client.set('songs', JSON.stringify(songs), {
+
+      const remappedSongs = songs.map((s: any) => {
+        return new PopularSong({
+          image: s.thumbnail.url,
+          title: s.title,
+          artist: s.channel.name,
+          id: s.id,
+        });
+      })
+
+      await client.set('songs', JSON.stringify(remappedSongs), {
         EX: 6 * 60 * 60,
         NX: true
       });
-      
-      return { songs: prepareResponseArray(songs) };
+
+      return { songs: prepareResponseArray(remappedSongs) };
     }
   
     throw new AppError("Internal server error", 500);
